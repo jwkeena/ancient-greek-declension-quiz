@@ -1,8 +1,7 @@
 let correctAnswers = 0;
 let incorrectAnswers = 0;
-let trueAnswer = "";
-let falseAnswers = [];
-let isAnswerCorrect = true;
+let answers = [];
+let questionNumber = 0;
 
 let greekStem = "";
 let declension = "";
@@ -10,7 +9,8 @@ let gender = "";
 let number = "";
 let grammaticalCase = "";
 let ending = "";
-let greekWord = "";
+let greekWordDeclined = "";
+let greekWordNominative = "";
 
 nounProperties = {
     declensions: ["firstDeclension", "secondDeclension", "thirdDeclension"],
@@ -60,54 +60,95 @@ thirdDeclension = {
 
 gameFunctions = {
     checkInfo: function () {
-        console.log("greekWord: " + greekWord);
-        console.log("greekStem: " + greekStem);
-        console.log("declension: " + declension);
-        console.log("gender: " + gender);
-        console.log("grammaticalCase: " + grammaticalCase);
-        console.log("number: " + number);
-        console.log("greekWord: " + greekWord);
+        // console.log("greekWordNominative: " + greekWordNominative);
+        // console.log("greekStem: " + greekStem);
+        // console.log("declension: " + declension);
+        // console.log("gender: " + gender);
+        // console.log("grammaticalCase: " + grammaticalCase);
+        // console.log("number: " + number);
+        console.log("greekWordDeclined: " + greekWordDeclined);
     },
     startGame: function () {
 
     },
-    pickNewWord: function () {
-        //selects random word from word object and passes each element of the corresponding array to the global scope
-        random1 = Math.floor(Math.random()*words.allWords.length);
-        newWord = words.allWords[random1];
-        greekWord = words[newWord][0] //variable names for object properties MUST be in bracket notation
+    questionSetup: function () {
+        answers = [];
+        gameFunctions.pickCorrectAnswer();
+        gameFunctions.checkInfo();
+        //prints question information to screen
+            $('#case').text(grammaticalCase);
+            $('#gender').text(gender);
+            if (number === 0) {
+                $('#number').text("singular");
+            } else {
+                $('#number').text("plural");
+            }
+            $('#word').text(greekWordNominative);
+        
+        //picks three wrong answers
+        while (answers.length < 4) {
+            gameFunctions.pickWrongAnswer();
+        }
+        
+        // $('#answer1').text(greekWordDeclined);
+            
+    },
+    pickCorrectAnswer: function () {
+        //selects random word from word object and stores each element of the corresponding array in global scope
+        randomWordIndex = Math.floor(Math.random()*words.allWords.length);
+        newWord = words.allWords[randomWordIndex];
+        greekWordNominative = words[newWord][0] //variable names for object properties MUST be in bracket notation
         greekStem = words[newWord][1];
         declension = words[newWord][2];
         gender = words[newWord][3]
 
         //selects a random case and number
-        random2 = Math.floor(Math.random()*nounProperties.case.length);
-        grammaticalCase = nounProperties.case[random2];
+        randomCaseIndex = Math.floor(Math.random()*nounProperties.case.length);
+        grammaticalCase = nounProperties.case[randomCaseIndex];
+        randomNumberIndex = Math.floor(Math.random()*nounProperties.number.length);
+        number = nounProperties.number[randomNumberIndex];
         
-        random3 = Math.floor(Math.random()*nounProperties.number.length);
-        number = nounProperties.number[random3];
-        
-        gameFunctions.checkInfo();
-
-        //concatenates and displays full greekWord based on variables just picked
+        //declines the new greek word based on variables just picked
         //note that in order to refer to an object based on a variable, I am forced to reference the window to use bracket notation. In other words, console.log(secondDeclension), when a variable is involved, turns into console.log(window[declension])
-        greekWord = greekStem + window[declension][gender][grammaticalCase][number]
-        
-        //gameFunctions.pickNewAnswers(answer);
+        greekWordDeclined = greekStem + window[declension][gender][grammaticalCase][number];
+        answers.push(greekWordDeclined);
     },
-    pickNewAnswers: function (answer) {
-        //grabs correct answer from pickNewWord function
-        //randomly picks three false answers
-        //puts all answers in random order
+    pickWrongAnswer: function () {
+        randomCaseIndex = Math.floor(Math.random()*nounProperties.case.length);
+        newGrammaticalCase = nounProperties.case[randomCaseIndex];
+        randomNumberIndex = Math.floor(Math.random()*nounProperties.number.length);
+        newNumber = nounProperties.number[randomNumberIndex];
+        wrongAnswer = greekStem + window[declension][gender][newGrammaticalCase][newNumber];
+        
+        isDuplicate = gameFunctions.checkWrongAnswerForDuplicates(wrongAnswer);
+        console.log("isDuplicate: " + isDuplicate);
+        
+        if (isDuplicate === true) {
+            gameFunctions.pickWrongAnswer();
+        } else {
+            answers.push(wrongAnswer);
+            console.log(answers);
+        }
+    },
+    checkWrongAnswerForDuplicates(wrongAnswer) {
+        for (i=0; i < answers.length; i++) {
+            if (wrongAnswer === answers[i]) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     },
     checkAnswer: function () {
+        //compare user's choice with greekWordDeclined
         //if else block incrementing either correctAnswers or incorrectAnswers
+        //gameFunctions.showAnswer();
     },
     showAnswer: function () {
         //displays screen with the correct answer, and whether the user got it right or wrong
     },
     calculatePercentage: function () {
-        //tallies final score
+        //tallies final score after questionNumber variable hits 10
     }
 
 }
