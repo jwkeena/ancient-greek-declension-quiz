@@ -20,13 +20,17 @@
     
 <div id="content">
 
-    <p id="current-question">What is the <span id="case">nominative</span> <span id="gender">masculine</span> <span id="number">singluar</span> of <span id="word">λόγος</span>?</p>
-    <p class ="answer" id="answer1">λόγος</p>
-    <p class ="answer" id="answer2">λόγου</p>
-    <p class ="answer" id="answer3">λόγῳ</p>
-    <p class ="answer" id="answer4">λόγε</p>
-    <button onclick="gameFunctions.pickNewWord();">Pick New Word</button>
-    <button onclick="gameFunctions.questionSetup();">Question Setup</button>
+    <p id="current-question">What is the <span id="case">case,</span> <span id="gender">gender, </span> <span id="number">and number</span> of <span id="word">_____</span>?</p>
+    <p class ="answer" id="answer1"></p>
+    <p class ="answer" id="answer2"></p>
+    <p class ="answer" id="answer3"></p>
+    <p class ="answer" id="answer4"></p>
+    <button onclick="gameFunctions.questionSetup();">Begin</button>
+
+    <br>
+
+    <p>Correct answers: <span id="correct-answers">0</span></p>
+    <p>Inorrect answers: <span id="incorrect-answers">0</span></p>
 
 </div>
 

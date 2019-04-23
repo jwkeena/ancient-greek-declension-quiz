@@ -79,7 +79,8 @@ gameFunctions = {
         // console.log("gender: " + gender);
         // console.log("grammaticalCase: " + grammaticalCase);
         // console.log("number: " + number);
-        console.log("greekWordDeclined: " + greekWordDeclined);
+        console.log("answer: " + greekWordDeclined);
+        console.log(answers);
     },
     startGame: function () {
 
@@ -87,16 +88,15 @@ gameFunctions = {
     questionSetup: function () {
         answers = [];
         gameFunctions.pickCorrectAnswer();
-        gameFunctions.checkInfo();
         //prints question information to screen
-            $('#case').text(grammaticalCase);
-            $('#gender').text(gender);
-            if (number === 0) {
-                $('#number').text("singular");
-            } else {
-                $('#number').text("plural");
-            }
-            $('#word').text(greekWordNominative);
+        $('#case').text(grammaticalCase);
+        $('#gender').text(gender);
+        if (number === 0) {
+            $('#number').text("singular");
+        } else {
+            $('#number').text("plural");
+        }
+        $('#word').text(greekWordNominative);
         
         //picks three wrong answers
         while (answers.length < 4) {
@@ -110,6 +110,7 @@ gameFunctions = {
         $('#answer3').text(answers[2]);
         $('#answer4').text(answers[3]);
         
+        gameFunctions.checkInfo();
     },
     pickCorrectAnswer: function () {
         //selects random word from word object and stores each element of the corresponding array in global scope
@@ -127,7 +128,7 @@ gameFunctions = {
         number = nounProperties.number[randomNumberIndex];
         
         //declines the new greek word based on variables just picked
-        //note that in order to refer to an object based on a variable, I am forced to reference the window to use bracket notation. In other words, console.log(secondDeclension), when a variable is involved, turns into console.log(window[declension])
+        //note that in order to refer to an object based on a variable, I am forced to reference the window to use bracket notation. In other words, console.log(secondDeclension), when a variable is involved instead of secondDeclension, turns into console.log(window[variable])
         greekWordDeclined = greekStem + window[declension][gender][grammaticalCase][number];
         answers.push(greekWordDeclined);
     },
@@ -139,18 +140,15 @@ gameFunctions = {
         wrongAnswer = greekStem + window[declension][gender][newGrammaticalCase][newNumber];
         
         isDuplicate = gameFunctions.checkWrongAnswerForDuplicates(wrongAnswer);
-        console.log("isDuplicate: " + isDuplicate);
         
         if (isDuplicate === true) {
             gameFunctions.pickWrongAnswer();
         } else {
             answers.push(wrongAnswer);
-            console.log(answers);
         }
     },
     checkWrongAnswerForDuplicates(wrongAnswer) {
         for (i=0; i < answers.length; i++) {
-            console.log("wrong answer: " + wrongAnswer + " answers[i]: " + answers[i])
             if (wrongAnswer === answers[i]) {
                 return true;
             } 
@@ -170,6 +168,20 @@ gameFunctions = {
     }
 
 }
+
+//answer event listener
+$('.answer').on('click', function () {
+  let choice = $(this).text();
+  if (choice === greekWordDeclined) {
+    ++correctAnswers;
+    $('#correct-answers').text(correctAnswers);
+    gameFunctions.questionSetup();
+  } else {
+    ++incorrectAnswers;
+    $('#incorrect-answers').text(incorrectAnswers);
+    gameFunctions.questionSetup();
+  }
+})
 
 // nominative: "λόγος", λόγοι
 // genitive: "λόγου", λόγων
