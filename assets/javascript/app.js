@@ -12,6 +12,19 @@ let ending = "";
 let greekWordDeclined = "";
 let greekWordNominative = "";
 
+
+//Fisher-Yates shuffle algorithm
+Array.prototype.shuffle = function() {
+    let i = this.length, j, temp;
+    while(--i > 0) {
+        j = Math.floor(Math.random()* (i+1));
+        temp = this[j];
+        this[j] = this[i];
+        this[i] = temp;
+    }
+    return this;
+}
+
 nounProperties = {
     declensions: ["firstDeclension", "secondDeclension", "thirdDeclension"],
     number: [0, 1], //singulars are always at 0 in arrays below, plurals in 1
@@ -90,8 +103,13 @@ gameFunctions = {
             gameFunctions.pickWrongAnswer();
         }
         
-        // $('#answer1').text(greekWordDeclined);
-            
+        //shuffles answers and then prints each to the screen
+        answers.shuffle();
+        $('#answer1').text(answers[0]);
+        $('#answer2').text(answers[1]);
+        $('#answer3').text(answers[2]);
+        $('#answer4').text(answers[3]);
+        
     },
     pickCorrectAnswer: function () {
         //selects random word from word object and stores each element of the corresponding array in global scope
@@ -132,12 +150,12 @@ gameFunctions = {
     },
     checkWrongAnswerForDuplicates(wrongAnswer) {
         for (i=0; i < answers.length; i++) {
+            console.log("wrong answer: " + wrongAnswer + " answers[i]: " + answers[i])
             if (wrongAnswer === answers[i]) {
                 return true;
-            } else {
-                return false;
-            }
+            } 
         }
+            return false; //this must be outside the for loop; otherwise duplicates will slip through. The for loop must run through EACH element in the array no matter what.
     },
     checkAnswer: function () {
         //compare user's choice with greekWordDeclined
