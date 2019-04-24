@@ -1,10 +1,39 @@
-#content {
+html {
+    height: 100%;
+}
+
+body {
+    background-image: url("../images/background.jpg");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    font-family: Palatino, Palatino Linotype, Palatino LT STD, Book Antiqua, Georgia, serif;
+}
+
+.container {
+    position: relative;
     text-align: center;
-    width: 50%;
-    margin: 0 auto;
+    cursor: pointer;
+}
+
+#content {
+    margin: 15% auto;
+    padding: 10px 40px 10px 40px;
+    width: 40%;
+    background: rgb(167,180,191);
+    border-radius: 10px;
+    box-shadow: 0 0 3pt 2pt white
+}
+
+#results {
+    position: absolute;
+    background: red;
+    top: 40%;
+    right: 45%;
+    display: none;
 }
 
 .answer:hover {
-    background-color: red;
+    background-color: black;
+    color: white;
     font-weight: bold;
 }
