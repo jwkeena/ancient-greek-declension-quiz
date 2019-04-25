@@ -203,7 +203,7 @@ thirdDeclension = {
 gameFunctions = {
     //I put the timer variables in the gameFunctions scope so that they don't initialize immediately upon the page loading
     answerTimer: setInterval(this.decrementSecond, 1000),
-    questionTimer: setInterval(this.questionSetup, 8000),
+    questionTimer: setInterval(this.questionSetup, 8050), 
     
     checkInfo: function () {
         // console.log("greekWordNominative: " + greekWordNominative);
@@ -217,12 +217,13 @@ gameFunctions = {
     },
     decrementSecond: function () {
         --secondsRemaining;
-        $('#timer').text(secondsRemaining)
+        
         if (secondsRemaining === 0) {
-            ++incorrectAnswers;
+            ++incorrectAnswers; //this won't work unless there's a little more than 8 seconds on the questionTimer
             $('#incorrect-answers').text(incorrectAnswers);
             gameFunctions.questionSetup();
         }
+        $('#timer').text(secondsRemaining)
     },
     resetVariables: function () {
         //resets variables
@@ -234,7 +235,7 @@ gameFunctions = {
         clearInterval(gameFunctions.answerTimer);
         clearInterval(gameFunctions.questionTimer);
         gameFunctions.answerTimer = setInterval(this.decrementSecond, 1000);
-        gameFunctions.questionTimer = setInterval(this.questionSetup, 8000);
+        gameFunctions.questionTimer = setInterval(this.questionSetup, 8050);
 
     },
     questionSetup: function () {
