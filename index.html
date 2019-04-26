@@ -23,7 +23,8 @@
     
     <div id="content">
 
-        <p>Time remaining: <span id="timer">8</span></p>
+        <p id="preface">Questions per quiz: 15</p>
+        <p>Time per question: <span id="timer">10 seconds</span></p>
         <p id="current-question">What is the <span id="case">case,</span> <span id="gender">gender, </span> <span id="number">and number</span> of <span id="word">_____</span>?</p>
         <p class ="answer" id="answer1"></p>
         <p class ="answer" id="answer2"></p>
@@ -33,14 +34,15 @@
         
         <br>
         
-        <p>Correct answers: <span id="correct-answers">0</span></p>
-        <p>Inorrect answers: <span id="incorrect-answers">0</span></p>
-
         
     </div>
-
+    
     <div id="results">
-        <p>let's see if this works</p> 
+        <br><br><br>
+        <p><span id="answer"></span></p>
+        <button id="next-question" onclick="gameFunctions.questionSetup();">Next question</button>
+        <p>Correct answers: <span id="correct-answers">0</span></p>
+        <p>Incorrect answers: <span id="incorrect-answers">0</span></p>
     </div>
 
 </div>

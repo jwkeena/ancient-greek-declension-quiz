@@ -1,8 +1,8 @@
+let currentQuestion = 0;
 let correctAnswers = 0;
 let incorrectAnswers = 0;
 let answers = [];
-let questionNumber = 0;
-let secondsRemaining = 8;
+let secondsRemaining = 10;
 
 let declension = "";
 let gender = "";
@@ -26,14 +26,14 @@ Array.prototype.shuffle = function() {
 
 words = {
     allWords: ["logos", "nesos", "ergon", "polites", "psyche", "daimon", "charis"],
-    logos: ["λόγος", "secondDeclension", "masculine", "2nd, declined the same as masculine nouns"],
-    nesos: ["νῆσος", "secondDeclension", "feminine", "2nd, declined the same as feminine nouns"],
-    ergon: ["ἔργον", "secondDeclension", "neuter", "2nd, remember nom/acc rule"],
-    polites: ["πολίτης", "firstDeclension", "masculine", "1st, declined the same as -ας nouns"],
-    psyche: ["ψυχή", "firstDeclension", "feminine", "1st, declined the same as long -α nouns"],
-    daimon: ["δαίμων", "thirdDeclension", "masculine", "3rd, note the unique vocative in the singular"],
-    charis: ["χάρις", "thirdDeclension", "feminine", "3rd, note unique vocative in the singular"],
-    genos: ["γένος", "thirdDeclension", "neuter", "3rd, remember nom/acc rule"]
+    logos: ["λόγος", "secondDeclension", "masculine", "2nd"],
+    nesos: ["νῆσος", "secondDeclension", "feminine", "2nd"],
+    ergon: ["ἔργον", "secondDeclension", "neuter", "2nd"],
+    polites: ["πολίτης", "firstDeclension", "masculine", "1st"],
+    psyche: ["ψυχή", "firstDeclension", "feminine", "1st"],
+    daimon: ["δαίμων", "thirdDeclension", "masculine", "3rd"],
+    charis: ["χάρις", "thirdDeclension", "feminine", "3rd"],
+    genos: ["γένος", "thirdDeclension", "neuter", "3rd"]
 }
 
 nounProperties = {
@@ -77,9 +77,7 @@ firstDeclension = {
             vocative: "ψυχαί",
         }
     },
-
     //there is no neuter 1st declension noun
-
 }
 
 secondDeclension = {
@@ -182,28 +180,12 @@ thirdDeclension = {
             vocative: "γένη",
         }
     }
-
-    // singular: {
-    //     nominative: "",
-    //     genitive: "",
-    //     dative: "",
-    //     accusative: "",
-    //     vocative: "",
-    // },
-    // plural: {
-    //     nominative: "",
-    //     genitive: "",
-    //     dative: "",
-    //     accusative: "",
-    //     vocative: "",
-    // }
-
 }
 
 gameFunctions = {
     //I put the timer variables in the gameFunctions scope so that they don't initialize immediately upon the page loading
     answerTimer: setInterval(this.decrementSecond, 1000),
-    questionTimer: setInterval(this.questionSetup, 8000),
+    questionTimer: setInterval(this.questionSetup, 10050),
     
     checkInfo: function () {
         // console.log("greekWordNominative: " + greekWordNominative);
@@ -215,6 +197,7 @@ gameFunctions = {
         console.log("answer: " + greekWordDeclined);
         console.log(answers);
     },
+
     decrementSecond: function () {
         --secondsRemaining;
         $('#timer').text(secondsRemaining)
@@ -224,6 +207,7 @@ gameFunctions = {
             gameFunctions.questionSetup();
         }
     },
+
     resetVariables: function () {
         //resets variables
         secondsRemaining = 8;
@@ -234,11 +218,21 @@ gameFunctions = {
         clearInterval(gameFunctions.answerTimer);
         clearInterval(gameFunctions.questionTimer);
         gameFunctions.answerTimer = setInterval(this.decrementSecond, 1000);
-        gameFunctions.questionTimer = setInterval(this.questionSetup, 8000);
-
+        gameFunctions.questionTimer = setInterval(this.questionSetup, 10050);
     },
+    
     questionSetup: function () {
+        $('#preface').text("")
         gameFunctions.resetVariables();
+
+        //hides results screen
+        $('#results').css("display", "none");
+
+        //ends game after 15 questions
+        ++currentQuestion;
+        if (currentQuestion > 15) {
+            gameFunctions.showAnswer("end");
+        }
         
         //retrieves answer and prints question information to screen
         gameFunctions.pickCorrectAnswer();
@@ -246,7 +240,7 @@ gameFunctions = {
         $('#gender').text(gender);
         $('#number').text(number);
         $('#word').text(greekWordNominative);
-    
+        
         //picks three wrong answers
         while (answers.length < 4) {
             gameFunctions.pickWrongAnswer();
@@ -261,6 +255,22 @@ gameFunctions = {
         
         gameFunctions.checkInfo();
     },
+    
+    showAnswer: function (result) {
+        //pauses timers so the user can choose when to generate the next question
+        clearInterval(gameFunctions.answerTimer);
+        clearInterval(gameFunctions.questionTimer);
+
+        $('#results').css("display", "block");
+        if (result === "correct") {
+            $('#answer').text("That's right! " + greekWordDeclined + " is the " + grammaticalCase + " " + gender + " " + number + " of " + greekWordNominative + ".");
+        } else if (result === "incorrect") {
+            $('#answer').text("Sorry. The " + grammaticalCase + " " + gender + " " + number + " of " + greekWordNominative + " is " + greekWordDeclined + ".");
+        } else if (result === "end") {
+            $('#answer').text("Pencils down! Your score is " + gameFunctions.calculatePercentage(correctAnswers) + ". Try again?");
+        }
+    },
+    
     pickCorrectAnswer: function () {
         //selects random word from word object and stores each element of the corresponding array in global scope
         randomWordIndex = Math.floor(Math.random()*words.allWords.length);
@@ -280,6 +290,7 @@ gameFunctions = {
         greekWordDeclined = window[declension][gender][number][grammaticalCase];
         answers.push(greekWordDeclined);
     },
+
     pickWrongAnswer: function () {
         randomCaseIndex = Math.floor(Math.random()*nounProperties.cases.length);
         newGrammaticalCase = nounProperties.cases[randomCaseIndex];
@@ -295,6 +306,7 @@ gameFunctions = {
             answers.push(wrongAnswer);
         }
     },
+
     checkWrongAnswerForDuplicates(wrongAnswer) {
         for (i=0; i < answers.length; i++) {
             if (wrongAnswer === answers[i]) {
@@ -303,11 +315,11 @@ gameFunctions = {
         }
             return false; //this must be outside the for loop; otherwise duplicates will slip through. The for loop must run through EACH element in the array no matter what.
     },
-    showAnswer: function () {
-        //displays screen with the correct answer, and whether the user got it right or wrong
-    },
-    calculatePercentage: function () {
-        //tallies final score after questionNumber variable hits 10
+
+    calculatePercentage: function (correctAnswers) {
+        var score = Math.floor((correctAnswers / 15) * 100);
+        score = score + "%";
+        return score;
     }
 }
 
@@ -317,26 +329,10 @@ $('.answer').on('click', function () {
   if (choice === greekWordDeclined) {
     ++correctAnswers;
     $('#correct-answers').text(correctAnswers);
-    gameFunctions.questionSetup();
+    gameFunctions.showAnswer("correct");
   } else {
     ++incorrectAnswers;
     $('#incorrect-answers').text(incorrectAnswers);
-    gameFunctions.questionSetup();
-  }
-  //reset timer
+    gameFunctions.showAnswer("incorrect");
+}
 })
-
-// singular: {
-//     nominative: "",
-//     genitive: "",
-//     dative: "",
-//     accusative: "",
-//     vocative: "",
-// },
-// plural: {
-//     nominative: "",
-//     genitive: "",
-//     dative: "",
-//     accusative: "",
-//     vocative: "",
-// }

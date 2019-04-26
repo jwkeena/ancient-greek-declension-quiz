@@ -18,7 +18,7 @@ body {
 #content {
     margin: 15% auto;
     padding: 10px 40px 10px 40px;
-    width: 40%;
+    width: 35%;
     background: rgb(167,180,191);
     border-radius: 10px;
     box-shadow: 0 0 3pt 2pt white
@@ -26,10 +26,17 @@ body {
 
 #results {
     position: absolute;
-    background: red;
-    top: 40%;
-    right: 45%;
+    padding: 10px 40px 10px 40px;
+    width: 40%;
+    height: 100%;
+    background-color: black;
+    color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 3pt 2pt white;
+    top: 0%;
+    right: 27.5%;
     display: none;
+
 }
 
 .answer:hover {
