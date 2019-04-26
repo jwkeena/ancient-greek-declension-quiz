@@ -1,3 +1,4 @@
+let isQuizRunning = false;
 let currentQuestion = 0;
 let correctAnswers = 0;
 let incorrectAnswers = 0;
@@ -10,7 +11,7 @@ let number = "";
 let grammaticalCase = "";
 let greekWordDeclined = "";
 let greekWordNominative = "";
-
+let hint = "";
 
 //Fisher-Yates shuffle algorithm
 Array.prototype.shuffle = function() {
@@ -204,16 +205,27 @@ gameFunctions = {
         if (secondsRemaining === 0) {
             ++incorrectAnswers; //this won't work unless there's a little more than 8 seconds on the questionTimer
             $('#incorrect-answers').text(incorrectAnswers);
-            gameFunctions.questionSetup();
+            gameFunctions.showAnswer("outOfTime");
         }
         $('#timer').text(secondsRemaining)
     },
 
     resetVariables: function () {
         //resets variables
-        secondsRemaining = 8;
+        secondsRemaining = 10;
         $('#timer').text(secondsRemaining);
         answers = [];
+        hint = "";
+        $('#hint').text("");
+
+        //resets currentQuestion and other variables only if the quiz has ended, allowing game to restart
+        if (currentQuestion > 15) {
+            currentQuestion = 0;
+            correctAnswers = 0;
+            incorrectAnswers = 0;
+            $('#correct-answers').text(correctAnswers);
+            $('#incorrect-answers').text(incorrectAnswers);
+        }
 
         //resets timers
         clearInterval(gameFunctions.answerTimer);
@@ -223,6 +235,10 @@ gameFunctions = {
     },
     
     questionSetup: function () {
+        isQuizRunning = true;
+        $('#begin').remove();
+        $('#hint-button').css("display", "inline-block")
+        $('#time').text("Time remaining: ");
         $('#preface').text("")
         gameFunctions.resetVariables();
 
@@ -233,6 +249,7 @@ gameFunctions = {
         ++currentQuestion;
         if (currentQuestion > 15) {
             gameFunctions.showAnswer("end");
+            isQuizRunning = false;
         }
         
         //retrieves answer and prints question information to screen
@@ -257,6 +274,14 @@ gameFunctions = {
         gameFunctions.checkInfo();
     },
     
+    hint: function () {
+        if (isQuizRunning) {
+            $('#hint').text(" " + hint + " declension")
+        } else {
+            $('#hint').text(" show declension of current word")
+        }
+    },
+
     showAnswer: function (result) {
         //pauses timers so the user can choose when to generate the next question
         clearInterval(gameFunctions.answerTimer);
@@ -267,6 +292,8 @@ gameFunctions = {
             $('#answer').text("That's right! " + greekWordDeclined + " is the " + grammaticalCase + " " + gender + " " + number + " of " + greekWordNominative + ".");
         } else if (result === "incorrect") {
             $('#answer').text("Sorry. The " + grammaticalCase + " " + gender + " " + number + " of " + greekWordNominative + " is " + greekWordDeclined + ".");
+        } else if (result === "outOfTime") {
+            $('#answer').text("Out of time! The " + grammaticalCase + " " + gender + " " + number + " of " + greekWordNominative + " is " + greekWordDeclined + ".");
         } else if (result === "end") {
             $('#answer').text("Pencils down! Your score is " + gameFunctions.calculatePercentage(correctAnswers) + ". Try again?");
         }
@@ -285,6 +312,9 @@ gameFunctions = {
         grammaticalCase = nounProperties.cases[randomCaseIndex];
         randomNumberIndex = Math.floor(Math.random()*nounProperties.numbers.length);
         number = nounProperties.numbers[randomNumberIndex];
+
+        //pushes the corresponding hint to the global hint variable
+        hint = words[newWord][3];
         
         //declines the new greek word based on variables just picked
         //note that in order to refer to an object based on a variable, I am forced to reference the window to use bracket notation. In other words, console.log(secondDeclension), when a variable is involved instead of secondDeclension, turns into console.log(window[variable])
