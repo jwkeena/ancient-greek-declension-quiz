@@ -16,7 +16,7 @@ body {
 }
 
 #content {
-    margin: 15% auto;
+    margin: 13% auto;
     padding: 10px 40px 10px 40px;
     width: 40%;
     background: rgb(167,180,191);
@@ -27,14 +27,14 @@ body {
 #results {
     position: absolute;
     padding: 10px 40px 10px 40px;
-    width: 45%;
+    width: 50%;
     height: 100%;
     background-color: black;
     color: white;
     border-radius: 10px;
     box-shadow: 0 0 3pt 2pt white;
-    top: 0%;
-    right: 22%;
+    top: -5%;
+    right: 22.5%;
     display: none;
 
 }
