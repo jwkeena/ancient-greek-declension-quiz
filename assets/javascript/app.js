@@ -200,12 +200,13 @@ gameFunctions = {
 
     decrementSecond: function () {
         --secondsRemaining;
-        $('#timer').text(secondsRemaining)
+        
         if (secondsRemaining === 0) {
-            ++incorrectAnswers;
+            ++incorrectAnswers; //this won't work unless there's a little more than 8 seconds on the questionTimer
             $('#incorrect-answers').text(incorrectAnswers);
             gameFunctions.questionSetup();
         }
+        $('#timer').text(secondsRemaining)
     },
 
     resetVariables: function () {
